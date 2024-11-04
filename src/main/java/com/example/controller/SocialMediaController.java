@@ -36,7 +36,7 @@ public class SocialMediaController {
     public ResponseEntity getMessage(@PathVariable int message_id){
         Message m = messageService.getMessage(message_id);
         if(m != null){
-            return ResponseEntity.status(200).body(m.toString());
+            return ResponseEntity.status(200).body(m);
         }
         return ResponseEntity.status(200).body(null);
     }
@@ -50,7 +50,7 @@ public class SocialMediaController {
     public ResponseEntity addMessage(@RequestBody Message message){
         Message m = messageService.addMessage(message);
         if(m != null){
-            return ResponseEntity.status(200).body(m.toString());
+            return ResponseEntity.status(200).body(m);
         }
         return ResponseEntity.status(400).body(null);
     }
@@ -59,7 +59,7 @@ public class SocialMediaController {
     public ResponseEntity deleteMessage(@PathVariable int message_id){
         Message m = messageService.deleteMessage(message_id);
         if(m != null){
-            return ResponseEntity.status(200).body(m.toString());
+            return ResponseEntity.status(200).body(1);
         }
         return ResponseEntity.status(200).body(null);
     }
@@ -68,7 +68,7 @@ public class SocialMediaController {
     public ResponseEntity editMessage(@PathVariable int message_id, @RequestBody String newMessage){
         Message m = messageService.editMessage(message_id, newMessage);
         if(m != null){
-            return ResponseEntity.status(200).body("1");
+            return ResponseEntity.status(200).body(1);
         }
         return ResponseEntity.status(400).body(null);
     }
@@ -77,7 +77,7 @@ public class SocialMediaController {
     public ResponseEntity login(@RequestBody Account acc){
         Optional<Account> target = Optional.ofNullable(accountService.loginAccount(acc));
         if(target.isPresent()){
-            return ResponseEntity.status(200).body(target.get().toString());
+            return ResponseEntity.status(200).body(target.get());
         }
         return ResponseEntity.status(401).body(null);
     }
