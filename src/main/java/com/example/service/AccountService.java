@@ -5,6 +5,7 @@ import com.example.entity.Message;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,24 +14,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class AccountService {
 
-    MessageRepository messageRepository;
-    AccountRepository accountRepository;
-
     @Autowired
-    public AccountService(MessageRepository messageRepo, AccountRepository accountRepo){
-        this.messageRepository = messageRepo;
-        this.accountRepository = accountRepo;
-    }
+    @Lazy
+    private MessageRepository messageRepository;
+    private AccountRepository accountRepository;
+
 
     public Account registerAccount(Account a){
-        if(accountRepository.findAccountByUsername(a.getUsername()) == null
-        && a.getUsername() != "" && a.getPassword().length() > 3){
-            return accountRepository.save(a);
+        if(accountRepository.findAccountByUsername(a.getUsername()) != null
+        || a.getUsername() == "" || a.getPassword().length() < 4){
+            return null;
         }
-        return null;
+        return accountRepository.save(a);
     }
 
     public Account loginAccount(Account a){
@@ -41,8 +38,8 @@ public class AccountService {
         return null;
     }
 
-    public List<Message> getAccountMessages(Account a){
-        Optional<Account> target = Optional.ofNullable(accountRepository.findAccountByUsername(a.getUsername()));
+    public List<Message> getAccountMessages(int a){
+        Optional<Account> target = accountRepository.findById(a);
         if(target.isPresent()){
             return messageRepository.getAccountMessages(target.get().getAccountId());
         }
