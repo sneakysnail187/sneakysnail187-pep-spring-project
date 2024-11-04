@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import org.springframework.web.bind.annotation.*;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -7,6 +8,7 @@ package com.example.controller;
  * where applicable as well as the @ResponseBody and @PathVariable annotations. You should
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
+@RestController
 public class SocialMediaController {
 
 }
