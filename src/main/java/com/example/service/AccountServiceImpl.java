@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.entity.Account;
 import com.example.entity.Message;
+import com.example.exception.DuplicateUsernameException;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,16 @@ public class AccountServiceImpl implements AccountService {
     
     @Autowired
     MessageRepository messageRepository;
+
+    @Autowired
     AccountRepository accountRepository;
 
 
-    public Account registerAccount(Account a){
-        if(accountRepository.findAccountByUsername(a.getUsername()) != null
-        || a.getUsername() == "" || a.getPassword().length() < 4){
+    public Account registerAccount(Account a) throws DuplicateUsernameException{
+        if(accountRepository.findAccountByUsername(a.getUsername()) != null){
+            throw new DuplicateUsernameException("Someone else has username: " + a.getUsername());
+        }
+        else if(a.getUsername() == "" || a.getPassword().length() < 4){
             return null;
         }
         return accountRepository.save(a);

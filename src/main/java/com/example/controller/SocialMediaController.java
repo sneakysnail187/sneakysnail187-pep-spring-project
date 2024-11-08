@@ -7,9 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.example.entity.Account;
 import com.example.entity.Message;
+import com.example.exception.DuplicateUsernameException;
+import com.example.entity.Edit;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
@@ -25,6 +32,9 @@ public class SocialMediaController {
     @Autowired
     @Lazy
     private MessageService messageService;
+
+    @Autowired
+    @Lazy
     private AccountService accountService;
 
     @GetMapping("/messages")
@@ -65,8 +75,10 @@ public class SocialMediaController {
     }
 
     @PatchMapping("/messages/{message_id}")
-    public ResponseEntity editMessage(@PathVariable int message_id, @RequestBody String newMessage){
-        Message m = messageService.editMessage(message_id, newMessage);
+    public ResponseEntity editMessage(@PathVariable int message_id, @RequestBody String newMessage) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper objectMapper = new ObjectMapper();
+        Edit deserialized = objectMapper.readValue(newMessage, Edit.class);
+        Message m = messageService.editMessage(message_id, deserialized.getmessageText());
         if(m != null){
             return ResponseEntity.status(200).body(1);
         }
@@ -84,12 +96,19 @@ public class SocialMediaController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody Account acc){
-        //Optional<Account> target = Optional.ofNullable(accountService.registerAccount(acc));
-        //Account target = accountService.registerAccount(acc);
-        if(accountService != null){
-            return ResponseEntity.status(200).body("target.toString()");
+      
+        Optional<Account> target = Optional.ofNullable(accountService.registerAccount(acc));
+        if(target.isPresent()){
+            return ResponseEntity.status(200).body(target.toString());
         }
-        return ResponseEntity.status(205).body(null);
+        return ResponseEntity.status(400).body(null);
+    }
+
+    
+    @ExceptionHandler({DuplicateUsernameException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public @ResponseBody String handleNotFound(DuplicateUsernameException ex) {
+        return ex.getMessage();
     }
 
 }

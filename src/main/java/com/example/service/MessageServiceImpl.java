@@ -24,8 +24,8 @@ public class MessageServiceImpl implements MessageService {
     AccountRepository accountRepository;
     
     public Message addMessage(Message m){
-        if(m.getMessageText() == "" || m.getMessageText().length() > 255 
-        || accountRepository.getById(m.getPostedBy()) == null){
+
+        if(!accountRepository.existsById(m.getPostedBy()) || m.getMessageText() == "" || m.getMessageText().length() > 255){
             return null;
         }
         return messageRepository.save(m);
@@ -54,8 +54,7 @@ public class MessageServiceImpl implements MessageService {
 
     public Message editMessage(int id, String newMessage){
         Optional<Message> optionalMessage = messageRepository.findById(id);
-        if(optionalMessage.isPresent() && newMessage != "" 
-        && newMessage.length() < 256){
+        if(optionalMessage.isPresent() && !newMessage.equals("") && newMessage.length() < 256){
             Message message = optionalMessage.get();
             message.setMessageText(newMessage);
             return messageRepository.save(message);
