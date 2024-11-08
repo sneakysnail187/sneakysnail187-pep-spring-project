@@ -24,7 +24,6 @@ public class MessageServiceImpl implements MessageService {
     AccountRepository accountRepository;
     
     public Message addMessage(Message m){
-
         if(!accountRepository.existsById(m.getPostedBy()) || m.getMessageText() == "" || m.getMessageText().length() > 255){
             return null;
         }
