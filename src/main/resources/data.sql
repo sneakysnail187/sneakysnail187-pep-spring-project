@@ -17,12 +17,12 @@ create table message (
 --add cascade delete/change later
 
 -- Starting test values with ids of 9999 to avoid test issues
---insert into reimbursement values (9999, 'testuser1', 'password');
---insert into reimbursement values (9998, 'testuser2', 'password');
---insert into reimbursement values (9997, 'testuser3', 'password');
---insert into reimbursement values (9996, 'testuser4', 'password');
+insert into account values (9999, 'testuser1', 'password');
+insert into account values (9998, 'testuser2', 'password');
+insert into account values (9997, 'testuser3', 'password');
+insert into account values (9996, 'testuser4', 'password');
 
---insert into user values (9999, 9999,'test user 1',1669947792);
---insert into user values (9997, 9997,'test user 2',1669947792);
---insert into user values (9996, 9996,'test user 3',1669947792);
+insert into message values (9999, 9999,'test user 1',1669947792);
+insert into message values (9997, 9997,'test user 2',1669947792);
+insert into message values (9996, 9996,'test user 3',1669947792);
 
